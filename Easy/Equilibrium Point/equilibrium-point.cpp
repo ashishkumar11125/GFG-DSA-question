@@ -13,17 +13,16 @@ class Solution{
     
         // Your code here
         int sum=0;
-        for(int i=0;i<n;i++){
+        for (int i=0;i<n;i++){
             sum+=a[i];
         }
-        int leftsum =0;
         
-        for(int i=0;i<n;i++){
-            sum-=a[i];
-            if(leftsum==sum)
+        int l_sum = 0;
+        for (int i=0; i<n; i++){
+            sum -=a[i];
+            if(l_sum == sum)
             return i+1;
-            
-            leftsum+=a[i];
+            l_sum += a[i];
         }
         return -1;
     }
