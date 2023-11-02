@@ -1,0 +1,29 @@
+class Solution{
+  public:
+    int minDist(int a[], int n, int x, int y) 
+    {
+        // code here
+        int Position=-1; // Initialize a variable to store the last position of x or y.
+        bool found=false; // Initialize a flag to indicate if both x and y were found in the array.
+        int ans =n;
+        // Iterate through the array.
+        for(int i=0; i<n; i++)
+        {
+            if(a[i]==x || a[i]==y)
+            {
+                if(Position>-1 && a[Position]!=a[i])
+                {
+                    // If Position is not the initial value (-1) and the current element is not the same as the previous one,
+                    // calculate the minimum distance and update 'n'.
+                    ans=min(ans, abs(Position-i));
+                    found=true; // Mark that both x and y were found in the array.
+                }
+                Position=i; // Update the Position to the current index.
+            }
+        }
+        if(!found) 
+        // If both x and y were not found in the array, return -1.
+        return -1;
+        return ans; // Return the minimum distance between x and y.
+    }
+};
