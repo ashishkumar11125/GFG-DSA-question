@@ -11,20 +11,32 @@ using namespace std;
 class Solution {
   public:
 
-     
     string longestCommonPrefix(vector<string> arr) {
-        string ans="-1";
-        for(int i=0;i<arr[0].size();i++){
-            string s1=arr[0].substr(0,i+1);
-            for(int j=1;j<arr.size();j++){
-                string s2=arr[j].substr(0,i+1);
-                if(s1!=s2){
-                    return ans;
+        // your code here
+         string smin = *min_element(arr.begin(), arr.end(), 
+                     [] (const string& s1, const string& s2) { 
+                         return s1.length() < s2.length(); }
+                     );
+                     
+        string str= "";
+        
+        for(int i=0; i<smin.size(); i++){
+            char ch = smin[i];
+
+            for(int j=0; j<arr.size(); j++){
+                string temp = arr[j];
+
+                if(ch == temp[i])
+                    continue;
+                else{
+                    if(str == "") return "-1";
+                    else return str;
                 }
             }
-            ans=s1;
+            
+            str += ch;
         }
-        return ans;
+        return str;
     }
 };
 
