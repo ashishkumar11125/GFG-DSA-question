@@ -2,41 +2,44 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+
 // } Driver Code Ends
 class Solution {
   public:
-    int editDistance(string s, string t) {
+    int editDistance(string str1, string str2) {
         // Code here
-        int sLen = s.size();
-        int tLen = t.size();
+        int m = str1.size();
+        int n = str2.size();
         
-        vector<vector<int>> dp(sLen+1,vector<int>(tLen+1,-1));
+        // Creating a 2D Vector DP 
+         vector<vector<int>> dp(m + 1, vector<int>(n + 1));
         
-        return editDistanceRecur(s,t,sLen,tLen, dp);
-    }
-    
-    int editDistanceRecur(string &s, string &t, int sLen, int tLen, vector<vector<int>> &dp){
-        
-        if(sLen == 0) return tLen;
-        
-        if(tLen == 0) return sLen;
-        
-        if(dp[sLen][tLen] != -1){
-            return dp[sLen][tLen];
+        // Iterating through words
+        for(int i = 0; i <= m; i++){
+            for(int j = 0; j <= n; j++){
+                // If i == 0, i.e STR1 is empty, meaning it will require j number of insertions
+                if(i == 0){
+                    dp[i][j] = j;
+                }
+                
+                // If j == 0; i.e STR2 is empty, meaning it will require i number of deletions
+                else if(j == 0){
+                    dp[i][j] = i;
+                }
+                
+                // We got the same word, so we'll do nothing and take back the result of previous
+                else if(str1[i-1] == str2[j-1]){
+                    dp[i][j] = dp[i-1][j-1];
+                }
+                
+                // Word isn't matching so we'll take minimum of insertion, removal or replacement
+                else{
+                    dp[i][j] = 1 + min({dp[i-1][j], dp[i][j-1], dp[i-1][j-1]});
+                }
+            }
         }
         
-        if(s[sLen-1] == t[tLen-1]){
-            return dp[sLen][tLen] = editDistanceRecur(s,t,sLen-1,tLen-1,dp);
-        }
-        else{
-            return dp[sLen][tLen] =  1 + min(
-             editDistanceRecur(s,t,sLen-1,tLen-1,dp),
-             min(
-               editDistanceRecur(s,t,sLen-1,tLen,dp),
-               editDistanceRecur(s,t,sLen,tLen-1,dp)
-             )
-            );
-        }
+        return dp[m][n];
     }
 };
 
