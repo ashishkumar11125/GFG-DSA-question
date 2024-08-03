@@ -1,52 +1,53 @@
 //{ Driver Code Starts
-//Initial template for C++
+// Initial template for C++
 
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
-// } Driver Code Ends
-//User function template for C++
 
-class Solution 
-{
-    public:
-    //Function to find if there is a celebrity in the party or not.
-    int celebrity(vector<vector<int> >& M, int n) 
-    {
-        // code here 
-        int a=0,b=n-1;
-        while(a<b){
-            if(M[a][b])a++;
-            else b--;
+// } Driver Code Ends
+// User function template for C++
+
+class Solution {
+  public:
+    // Function to find if there is a celebrity in the party or not.
+    int celebrity(vector<vector<int> >& mat) {
+        // code here
+         int n=mat.size();
+        int res = -1;
+        int count1 = 0;
+        int count2 = 0;
+        for(int i=0 ; i<n ; i++){
+            for (int j=0 ; j<n ; j++){
+                    count1+=mat[i][j];
+                    count2+=mat[j][i];
+            }
+            if (count1 == 0 && count2==n-1){
+                res = i;
+            }
+            count1=0;
+            count2=0;
         }
-        for(int i=0;i<n;i++){
-            if(i!=a&&(M[a][i]||!M[i][a]))return -1;
-        }
-        return a;
+        return res;
     }
 };
 
 //{ Driver Code Starts.
 
-int main()
-{
+int main() {
     int t;
-    cin>>t;
-    while(t--)
-    {
+    cin >> t;
+    while (t--) {
         int n;
-        cin>>n;
-        vector<vector<int> > M( n , vector<int> (n, 0));
-        for(int i=0;i<n;i++)
-        {
-            for(int j=0;j<n;j++)
-            {
-                cin>>M[i][j];
+        cin >> n;
+        vector<vector<int> > M(n, vector<int>(n, 0));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                cin >> M[i][j];
             }
         }
         Solution ob;
-        cout<<ob.celebrity(M,n)<<endl;
-
+        cout << ob.celebrity(M) << endl;
     }
 }
 
