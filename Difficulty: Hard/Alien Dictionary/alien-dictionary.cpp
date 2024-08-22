@@ -7,59 +7,48 @@ using namespace std;
 // } Driver Code Ends
 // User function Template for C++
 
-class Solution{
-    public:
-    void topo(vector<int>adj[], stack<int>&st, vector<int>&vis, int src){
-        vis[src] = 1;
-        
-        for(auto it: adj[src]){
-            if(!vis[it]){
-                topo(adj, st, vis, it);
+class Solution {
+  public:
+    void DFS(int u,vector<bool>&visit,stack<int>&st,vector<int>adj[]){
+      
+      visit[u]=true;
+      for(auto v:adj[u]){
+          if(visit[v]==false)
+          DFS(v,visit,st,adj);
+      }
+      st.push(u);
+  }
+    string findOrder(string dict[], int n, int k) {
+        vector<int>adj[k];
+        for(int i=0;i<n-1;i++){
+            string str1=dict[i];
+            string str2=dict[i+1];
+            int len=min(str1.length(),str2.length());
+            for(int j=0;j<len;j++){
+                if(str1[j]!=str2[j]){
+                    adj[str1[j]-'a'].push_back(str2[j]-'a');
+                    break;
+                }
             }
         }
-        
-        st.push(src);
-    }
-    string findOrder(string dict[], int N, int K) {
-        //code here
-        vector<int>adj[K];
-        vector<int>vis(K, 0);
-        string ans;
-        
-        for(int i=0;i<N-1;i++){
-            int j=0;
-            int n = dict[i].size();
-            int m = dict[i+1].size();
-            
-            int len = min(n, m);
-            
-            while(j<len && dict[i][j] == dict[i+1][j])
-                j++;
-            
-            if(j!=len){
-                adj[dict[i][j] - 'a'].push_back(dict[i+1][j] - 'a');
-            }
-        }
-        
         stack<int>st;
-        for(int i=0;i<K;i++){
-            if(!vis[i])
-                topo(adj, st, vis, i);
+        vector<bool>visit(k,false);
+        for(int i=0;i<k;i++){
+            if(visit[i]==false)
+            DFS(i,visit,st,adj);
         }
-        
-        while(!st.empty()){
-            int f = st.top();
+        string str="";
+        while(st.empty()==false){
+            str=str+char(st.top()+'a');
             st.pop();
-            char ch = f + 'a';
-            ans = ans + ch;
         }
-        
-        return ans;
+        return str;
     }
 };
 
 //{ Driver Code Starts.
 string order;
+
 bool f(string a, string b) {
     int p1 = 0;
     int p2 = 0;
@@ -69,7 +58,8 @@ bool f(string a, string b) {
         //	cout<<p1<<" "<<p2<<endl;
     }
 
-    if (p1 == p2 and a.size() != b.size()) return a.size() < b.size();
+    if (p1 == p2 and a.size() != b.size())
+        return a.size() < b.size();
 
     return p1 < p2;
 }
@@ -82,12 +72,14 @@ int main() {
         int N, K;
         cin >> N >> K;
         string dict[N];
-        for (int i = 0; i < N; i++) cin >> dict[i];
-        
+        for (int i = 0; i < N; i++)
+            cin >> dict[i];
+
         Solution obj;
         string ans = obj.findOrder(dict, N, K);
         order = "";
-        for (int i = 0; i < ans.size(); i++) order += ans[i];
+        for (int i = 0; i < ans.size(); i++)
+            order += ans[i];
 
         string temp[N];
         std::copy(dict, dict + N, temp);
@@ -95,10 +87,13 @@ int main() {
 
         bool f = true;
         for (int i = 0; i < N; i++)
-            if (dict[i] != temp[i]) f = false;
+            if (dict[i] != temp[i])
+                f = false;
 
-        if(f)cout << 1;
-        else cout << 0;
+        if (f)
+            cout << 1;
+        else
+            cout << 0;
         cout << endl;
     }
     return 0;
