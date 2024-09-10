@@ -4,49 +4,58 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+
 // } Driver Code Ends
 // User function Template for C++
 
-class Solution
-{
-    public:
-    void dfs(int node,vector<int>adj[],vector<bool>&visited){
-        visited[node]=1;
-        for(int j=0;j<adj[node].size();j++){
-            if(!visited[adj[node][j]]){
-                dfs(adj[node][j],adj,visited);
+class Solution {
+  private:
+    
+    void dfs(int node, vector<int> adj[], vector<int> &vis){
+        
+        vis[node] = 1;
+        
+        for(auto &adjNode : adj[node]){
+            if(!vis[adjNode]){
+                dfs(adjNode, adj, vis);
             }
         }
+        
     }
     
-    int isCircle(int N, vector<string> A)
-    {
-        // code here
-        //create adj list
-        vector<int>adj[26];
-        vector<int>indeg(26,0);
-        vector<int>outdeg(26,0);
-        for(int i=0;i<N;i++){
-            string temp=A[i];
-            int u=temp[0]-'a';
-            int v=temp[temp.size()-1]-'a';
+    public:
+    
+    int isCircle(vector<string> &arr) {
+        
+        int n = arr.size();
+        
+        // Step 1: Create a adjacency list, indegree and outdegree
+        vector<int> adj[26];
+        vector<int> inDeg(26, 0), outDeg(26, 0);
+        for(auto it : arr){
+            int u = it[0] - 'a';
+            int v = it[it.size() - 1] - 'a';
             adj[u].push_back(v);
-            indeg[v]++;
-            outdeg[u]++;
+            inDeg[v]++;
+            outDeg[u]++;
         }
         
-        //check for elurian circuit
-        for(int i=0;i<26;i++){
-            if(indeg[i]!=outdeg[i])
-                return 0;
+        // Step 2: If indegree and outdegree of any node is not equal
+        // then circle is impossible
+        for(int i=0; i<26; i++){
+            if(inDeg[i] != outDeg[i])
+               return 0;
         }
         
-        vector<bool>visited(26,0);
-        dfs(A[0][0]-'a',adj,visited);
+        // Step 3: Check for strongly connected component
+        vector<int> vis(26, 0);
+        dfs(arr[0][0] - 'a', adj, vis);
         
-        for(int i=0;i<26;i++){
-            if(indeg[i] && !visited[i])
-            return 0;
+        // Step 4: If any node whose indeg or outdeg is not zero and not visited
+        // then circle is impossible
+        for(int i=0; i<26; i++){
+            if(inDeg[i] and !vis[i])
+               return 0;
         }
         
         return 1;
@@ -54,24 +63,22 @@ class Solution
 };
 
 //{ Driver Code Starts.
-int main()
-{
+int main() {
     int t;
-    cin>>t;
-    while(t--){
+    cin >> t;
+    while (t--) {
         int N;
-        cin>>N;
+        cin >> N;
         vector<string> A;
         string s;
-        
-        for(int i = 0;i < N; i++)
-        {
-            cin>>s;
+
+        for (int i = 0; i < N; i++) {
+            cin >> s;
             A.push_back(s);
         }
-        
+
         Solution ob;
-        cout<<ob.isCircle(N, A)<<endl;
+        cout << ob.isCircle(A) << endl;
     }
     return 0;
 }
