@@ -111,17 +111,22 @@ class Solution {
   public:
     // Function to convert a binary tree into its mirror tree.
     void mirror(Node* node) {
-        // code here
-         if(node==NULL) return;
+        // Agar current node NULL hai toh kuch nahi karna (base case)
+        if(node == NULL) return;
         
+        // Recursively left subtree ka mirror banao
         mirror(node->left);
+        
+        // Recursively right subtree ka mirror banao
         mirror(node->right);
         
-        Node* temp=node->left;
-        node->left=node->right;
-        node->right=temp;
+        // Left aur right children ko swap kar do
+        Node* temp = node->left;  // Left child ko temporary variable mein store karo
+        node->left = node->right; // Right child ko left child mein daalo
+        node->right = temp;       // Temporary stored left child ko right child bana do
     }
 };
+
 
 //{ Driver Code Starts.
 
