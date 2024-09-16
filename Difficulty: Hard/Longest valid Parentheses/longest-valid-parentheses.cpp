@@ -4,39 +4,28 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+
 // } Driver Code Ends
 // User function Template for C++
 
-class Solution{
-public:
-     int maxLength(string S)
-    {
-        stack<int> s;
-        int n = S.length();
-
-        vector<int> dp(n, 0);
-        int ans = 0;
-
-        for(int i = 0; i < n; i++)
+class Solution {
+  public:
+     int maxLength(string& str) {
+        int ans=0,op=0,cl=0;
+        for(int i=0;i<str.length();i++)
         {
-            if(S[i] == '(')
-            {
-                s.push(i);
-            }
-            else
-            {
-                if(!s.empty())
-                {
-                    int top = s.top();
-                    s.pop();
-                    if(top - 1 >= 0)
-                    {
-                        dp[i] = dp[top-1] + (i - top + 1);
-                    }
-                    else dp[i] = (i-top+1);
-                }
-                ans = max(dp[i], ans);
-            }
+            if(str[i]=='(') op++;
+            else cl++;
+            if(cl>op) op=cl=0;
+            if(cl==op) ans=max(ans,cl*2);
+        }
+        op=cl=0;
+        for(int i=str.length()-1;i>=0;i--)
+        {
+            if(str[i]=='(')op++;
+            else cl++;
+            if(cl<op) op=cl=0;
+            if(cl==op) ans=max(ans,cl*2);
         }
         return ans;
     }
@@ -44,15 +33,15 @@ public:
 
 //{ Driver Code Starts.
 
-int main(){
+int main() {
     int t;
-    cin>>t;
-    while(t--){
+    cin >> t;
+    while (t--) {
         string S;
-        cin>>S;
-        
+        cin >> S;
+
         Solution ob;
-        cout<<ob.maxLength(S)<<"\n";
+        cout << ob.maxLength(S) << "\n";
     }
     return 0;
 }
