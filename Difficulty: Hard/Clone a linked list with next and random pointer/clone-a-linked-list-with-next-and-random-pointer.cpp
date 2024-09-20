@@ -11,12 +11,12 @@ using namespace std;
 struct Node {
     int data;
     Node *next;
-    Node *arb;
+    Node *random;
 
     Node(int x) {
         data = x;
         next = NULL;
-        arb = NULL;
+        random = NULL;
     }
 };
 
@@ -24,10 +24,10 @@ void print(Node *root) {
     Node *temp = root;
     while (temp != NULL) {
         int k;
-        if (temp->arb == NULL)
+        if (temp->random == NULL)
             k = -1;
         else
-            k = temp->arb->data;
+            k = temp->random->data;
         cout << temp->data << " " << k << " ";
         temp = temp->next;
     }
@@ -50,10 +50,10 @@ bool validation(Node *head, Node *res) {
     while (temp1 != NULL && temp2 != NULL) {
         if (temp1->data != temp2->data)
             return false;
-        if ((temp1->arb == NULL && temp2->arb != NULL) ||
-            (temp1->arb != NULL && temp2->arb == NULL) ||
-            (temp1->arb != NULL && temp2->arb != NULL &&
-             temp1->arb->data != temp2->arb->data))
+        if ((temp1->random == NULL && temp2->random != NULL) ||
+            (temp1->random != NULL && temp2->random == NULL) ||
+            (temp1->random != NULL && temp2->random != NULL &&
+             temp1->random->data != temp2->random->data))
             return false;
         temp1 = temp1->next;
         temp2 = temp2->next;
@@ -63,54 +63,29 @@ bool validation(Node *head, Node *res) {
 
 
 // } Driver Code Ends
+
 /* Link list Node
 struct Node {
     int data;
     Node *next;
-    Node *arb;
+    Node *random;
 
     Node(int x) {
         data = x;
         next = NULL;
-        arb = NULL;
+        random = NULL;
     }
 };*/
 
 class Solution {
   public:
     Node *copyList(Node *head) {
-       // Write your code here
-       
-        Node* temp=head;
-        /* Creating a copy current node and inserting 
-        in between the current node and next node to it */
-        while(temp){
-            Node* copy=new Node(temp->data);
-            copy->next=temp->next;
-            temp->next=copy;
-            temp=temp->next->next;
-        }
-        temp=head;
-        /* Giving the arb to the copied node */
-        while(temp){
-            Node* copied=temp->next;
-            if(temp->arb) copied->arb=temp->arb->next;
-            else copied->arb=NULL;
-            temp=temp->next->next;
-        }
-        temp=head;
-        /* Detaching the cloned Nodes */
-        Node* ans=new Node(0);
-        Node* temp2=ans;
-        while(temp){
-            temp2->next=temp->next;
-            temp2=temp2->next;
-            temp->next=temp->next->next;
-            temp=temp->next;
-        }
-        return ans->next;
+        // Write your code here
+                return head;
+
     }
 };
+
 
 //{ Driver Code Starts.
 
@@ -154,7 +129,7 @@ int main() {
                 tempB = tempB->next;
             }
 
-            tempA->arb = tempB;
+            tempA->random = tempB;
         }
 
         Solution ob;
