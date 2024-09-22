@@ -1,13 +1,13 @@
 //{ Driver Code Starts
-//Initial template for C++ 
- 
+// Initial template for C++
+
 #include <bits/stdc++.h>
 using namespace std;
 
 
 // } Driver Code Ends
 
-//User function template for C++
+// User function template for C++
 
 class Solution{
   public:		
@@ -38,27 +38,25 @@ class Solution{
 	}
 };
 
+
 //{ Driver Code Starts.
 
-int main() 
-{
-   
+int main() {
 
-   	ios_base::sync_with_stdio(0);
+    ios_base::sync_with_stdio(0);
     cin.tie(NULL);
     cout.tie(NULL);
-   
-   	int t;
-   	cin >> t;
-   	while(t--)
-   	{
-   		string str;
-   		cin >> str;
 
-   		Solution ob;
+    int t;
+    cin >> t;
+    while (t--) {
+        string str;
+        cin >> str;
 
-   		cout << ob.lps(str) << "\n";
-   	}
+        Solution ob;
+
+        cout << ob.lps(str) << "\n";
+    }
 
     return 0;
 }
