@@ -1,59 +1,61 @@
 //{ Driver Code Starts
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
+
 using namespace std;
 
 
 // } Driver Code Ends
-class Solution{
-    public:
+class Solution {
+  public:
     // arr: input array
-    // num: size of array
-    //Function to find maximum circular subarray sum.
-   int circularSubarraySum(int nums[], int n){
-        int total = nums[0];
-        int maxSum = nums[0] ,currMin = nums[0];
-        int minSum = nums[0] ,currMax = nums[0];
-        for(int i=1; i<n; i++){
-            total += nums[i];
+    // Function to find maximum circular subarray sum.
+    int circularSubarraySum(vector<int> &arr) {
 
-            currMin = min(currMin+nums[i],nums[i]);
-            currMax = max(currMax+nums[i],nums[i]);
-
-            maxSum = max(maxSum,currMax);
-            minSum = min(minSum,currMin);
+        // your code here
+        int max_so_far = 0 ; // Track the maximum Subarray Sum
+        int min_so_far = 0; // Track the minimum Subarray Sum
+        int minSum = arr[0] ; // Puri Array useme Jo Minimum sum Sub array
+        int maxSum = arr[0]; // Puri Array useme Jo Maximum sum Sub array;
+        int total = 0;
+        for(int i=0;i<arr.size();i++){
+            
+            // Kadane's Algorithm for Maximum Subarray Sum
+            max_so_far = max(max_so_far + arr[i],arr[i]);
+            maxSum = max(maxSum,max_so_far);
+            
+            // Kadane's Algorithm for Minium Subarray Sum
+            min_so_far = min(min_so_far + arr[i],arr[i]);
+            minSum = min(minSum,min_so_far);
+            
+            total += arr[i];
         }
-        if(maxSum < 0) return maxSum;
-        return max(total-minSum,maxSum);
-   }
+        return max(total - minSum,maxSum);
+    }
 };
 
 //{ Driver Code Starts.
+int main() {
+    int t;
+    cin >> t;
+    cin.ignore();
+    while (t--) {
+        vector<int> arr;
+        string input;
 
-int main()
- {
-	int T;
-	
-	//testcases
-	cin>> T;
-	
-	while (T--)
-	{
-	    int num;
-	    
-	    //size of array
-	    cin>>num;
-	    int arr[num];
-	    
-	    //inserting elements
-	    for(int i = 0; i<num; i++)
-	        cin>>arr[i];
-	        
-	    Solution ob;
-	    //calling function
-	    cout << ob.circularSubarraySum(arr, num) << endl;
-	    
-	}
-	
-	return 0;
+        // Read first array
+        getline(cin, input);
+        stringstream ss(input);
+        int number;
+        while (ss >> number) {
+            arr.push_back(number);
+        }
+
+        Solution ob;
+        int res = ob.circularSubarraySum(arr);
+
+        cout << res << endl;
+    }
+    return 0;
 }
+
 // } Driver Code Ends
