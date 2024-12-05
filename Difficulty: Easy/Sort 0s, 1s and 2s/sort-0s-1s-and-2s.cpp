@@ -8,22 +8,16 @@ class Solution {
   public:
     void sort012(vector<int>& arr) {
         // code here
-        int i=0,n=arr.size(),zero=0,two=n-1;
-        while(i<=two)
-        {
-            if(arr[i]==0)
-            {
-                swap(arr[i],arr[zero]);
-                zero++;
-            }
-            else if(arr[i]==2)
-            {
-                swap(arr[i],arr[two]);
-                two--;
-                i--;
-            }
-            i++;
-    }
+         vector<int> count(3,0);
+        for(int i=0;i<arr.size();i++){
+            count[arr[i]]++;
+        }
+        int j=2;
+        for(int i=arr.size()-1;i>=0;i--){
+            while(count[j]==0 && j>=0) j--;
+            arr[i]=j; 
+            count[j]--;
+        }
     }
 };
 
@@ -53,6 +47,7 @@ int main() {
         }
 
         cout << endl;
+        cout << "~" << endl;
     }
     return 0;
 }
