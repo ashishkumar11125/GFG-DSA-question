@@ -6,19 +6,20 @@ using namespace std;
 // } Driver Code Ends
 class Solution {
   public:
-    int kthElement(int k, vector<int>& arr1, vector<int>& arr2) {
+    int kthElement(vector<int>& a, vector<int>& b, int k) {
         // code here
-         vector<int> newarray(arr1);
-    newarray.insert(newarray.end(), arr2.begin(), arr2.end());
-
-    // Sort the merged array
-    sort(newarray.begin(), newarray.end());
-
-    // Return the k-th element (considering 0-based indexing)
-    k=k-1;
-    if (k >= 0 && k < newarray.size()) {
-        return newarray[k];
+        priority_queue<int,vector<int>,greater<int>> pq;
+    for(int i=0;i<a.size();i++){
+        pq.push(a[i]);
     }
+    for(int i=0;i<b.size();i++){
+        pq.push(b[i]);
+    }
+    while(k>1){
+        pq.pop();
+        k--;
+    }
+    return pq.top();
     }
 };
 
@@ -35,22 +36,22 @@ int main() {
         cin.ignore();
         string input;
         int num;
-        vector<int> arr1, arr2;
+        vector<int> a, b;
 
         getline(cin, input);
         stringstream s2(input);
         while (s2 >> num) {
-            arr1.push_back(num);
+            a.push_back(num);
         }
 
         getline(cin, input);
         stringstream s3(input);
         while (s3 >> num) {
-            arr2.push_back(num);
+            b.push_back(num);
         }
 
         Solution ob;
-        cout << ob.kthElement(k, arr1, arr2) << endl;
+        cout << ob.kthElement(a, b, k) << endl << "~\n";
     }
     return 0;
 }
