@@ -8,44 +8,46 @@ class Solution {
   public:
     vector<int> spirallyTraverse(vector<vector<int> > &matrix) {
         // code here
-         int top = 0;
-        int left = 0;
-        int right = matrix[0].size()-1;
-        int bottom = matrix.size()-1;
-        int totalElements = ( matrix.size() * matrix[0].size() );
         vector<int> ans;
-        
-        if (matrix.empty() || matrix[0].empty()) {
-        return ans; // Return an empty vector for an empty matrix
+        int row = matrix.size();
+        int col = matrix[0].size();
+        int count = 0;
+        int total = row * col;
+        int startingRow = 0;
+        int startingCol = 0;
+        int endingRow = row - 1;
+        int endingCol = col - 1;
+    
+        while (count < total) {
+          for (int index = startingCol; index <= endingCol && count < total;index++) 
+          {
+            ans.push_back(matrix[startingRow][index]);
+            count++;
+          }
+          startingRow++;
+    
+          for (int index = startingRow; index <= endingRow && count < total;index++) 
+          {
+            ans.push_back(matrix[index][endingCol]);
+            count++;
+          }
+          endingCol--;
+    
+          for (int index = endingCol; index >= startingCol && count < total;index--) 
+          {
+            ans.push_back(matrix[endingRow][index]);
+            count++;
+          }
+          endingRow--;
+    
+          for (int index = endingRow; index >= startingRow && count < total;index--) 
+          {
+            ans.push_back(matrix[index][startingCol]);
+            count++;
+          }
+          startingCol++;
         }
-        
-        while(totalElements > 0 ){
-            
-            // top
-            for(int j=left; j<=right && totalElements>0; j++){
-                ans.push_back(matrix[top][j]);
-                totalElements--;
-            }
-            top++;
-            // right
-            for(int i=top; i<=bottom && totalElements>0; i++){
-                ans.push_back(matrix[i][right]);
-                totalElements--;
-            }
-            right--;
-            //bottom 
-            for(int j=right; j>=left && totalElements>0; j--){
-                ans.push_back(matrix[bottom][j]);
-                totalElements--;
-            }
-            bottom--;
-            //left
-            for(int i=bottom; i>=top && totalElements>0; i--){
-                ans.push_back(matrix[i][left]);
-                totalElements--;
-            }
-            left++;
-        }
+    
         return ans;
     }
 };
@@ -58,9 +60,10 @@ int main() {
     while (t--) {
         int r, c;
         cin >> r >> c;
-        vector<vector<int>> matrix(r, vector<int>(c, 0));
+        vector<vector<int>> matrix(r);
 
         for (int i = 0; i < r; i++) {
+            matrix[i].assign(c, 0);
             for (int j = 0; j < c; j++) {
                 cin >> matrix[i][j];
             }
@@ -71,6 +74,9 @@ int main() {
         for (int i = 0; i < result.size(); ++i)
             cout << result[i] << " ";
         cout << endl;
+
+        cout << "~"
+             << "\n";
     }
     return 0;
 }
