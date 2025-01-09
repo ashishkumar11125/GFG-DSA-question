@@ -4,48 +4,43 @@ using namespace std;
 
 
 // } Driver Code Ends
-
-
-
 class Solution {
   public:
     vector<int> subarraySum(vector<int> &arr, int target) {
         // code here
-        int n = arr.size();
-        int left = 0, right = 0;
-        long long currentSum = 0;  // Use long long to handle large sums
-
-        for (right = 0; right < n; right++) {
-            currentSum += arr[right];
-
-            while (currentSum > target && left < right) {
-                currentSum -= arr[left];
-                left++;
-            }
-
-            if (currentSum == target) {
-                return {left + 1, right + 1};  // Return 1-based indices
-            }
+         int s=0;
+        int c_s=0;
+        
+        for(int end=0;end<arr.size();end++)
+        {
+            c_s+=arr[end];
+            
+            while(c_s>target && s<end)
+              {
+                  c_s-=arr[s];
+                  s++;
+              }
+              
+              if(c_s==target)
+               return {s+1,end+1};
         }
-
         return {-1};
+
     }
 };
-
-
 
 //{ Driver Code Starts.
 
 int main() {
     int t;
     cin >> t;
-    cin.ignore(); // Ignore the newline character after t
+    cin.ignore();
     while (t--) {
         vector<int> arr;
         int d;
         string input;
 
-        getline(cin, input); // Read the entire line for the array elements
+        getline(cin, input);
         stringstream ss(input);
         int number;
         while (ss >> number) {
@@ -53,7 +48,7 @@ int main() {
         }
 
         cin >> d;
-        cin.ignore(); // Ignore the newline character after d
+        cin.ignore();
 
         Solution ob;
         vector<int> result = ob.subarraySum(arr, d);
