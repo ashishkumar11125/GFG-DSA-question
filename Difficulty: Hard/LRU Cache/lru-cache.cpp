@@ -6,124 +6,138 @@ using namespace std;
 // } Driver Code Ends
 // design the class in the most optimal way
 
-class Node {
-public:
-    int key, value;
-    Node *prev, *next;
-    
-    Node(int key, int value) {
+struct Node {
+    int key, val;
+    Node *next;
+    Node(int key, int val) {
         this->key = key;
-        this->value = value;
-        this->prev = nullptr;
-        this->next = nullptr;
+        this->val = val;
+        next = nullptr;
     }
 };
 
 class LRUCache {
-private:
-    int size, capacity;
+  private:
+    int cap;
     Node *head, *tail;
-    unordered_map<int, Node*> mp;
-
-    void addNode(Node* node) {
-        node->next = head->next;
-        head->next->prev = node;
-        node->prev = head;
-        head->next = node;
-    }
-
-    void removeNode(Node* node) {
-        node->prev->next = node->next;
-        node->next->prev = node->prev;
-    }
-
-    void moveToHead(Node* node) {
-        removeNode(node);
-        addNode(node);
-    }
-
-    Node* popTail() {
-        Node* res = tail->prev;
-        removeNode(res);
-        return res;
-    }
-
-public:
+  public:
+    // Constructor for initializing the cache capacity with the given value.
     LRUCache(int cap) {
-        head = new Node(-1, -1);
-        tail = new Node(-1, -1);
-        head->next = tail;
-        tail->prev = head;
-        size = 0;
-        capacity = cap;
+        this->cap = cap;
+        head = tail = nullptr;
     }
 
-    int GET(int key) {
-        if (mp.find(key) == mp.end())
-            return -1;
-
-        Node* node = mp[key];
-        moveToHead(node);
-        return node->value;
-    }
-
-    void SET(int key, int value) {
-        if (mp.find(key) == mp.end()) {
-            Node* newNode = new Node(key, value);
-            mp[key] = newNode;
-            addNode(newNode);
-
-            size++;
-
-            if (size > capacity) {
-                Node* temp = popTail();
-                mp.erase(temp->key);
-                delete temp;
-                size--;
+    // Function to return value corresponding to the key.
+    int get(int key) {
+        if(!head) return -1;
+        else if(tail->key == key) return tail->val;
+        else if(head->key == key) {
+            tail->next = head;
+            head = head->next;
+            tail = tail->next;
+            tail->next = nullptr;
+            return tail->val;
+        }
+        else {
+            Node *prev = head, *cur = head->next;
+            while(cur) {
+                if(cur->key == key) {
+                    prev->next = cur->next;
+                    tail->next = cur;
+                    tail = tail->next;
+                    tail->next = nullptr;
+                    return tail->val;
+                }
+                
+                prev = cur;
+                cur = cur->next;
             }
-        } else {
-            Node* node = mp[key];
-            node->value = value;
-            moveToHead(node);
+        }
+        
+        return -1;
+    }
+
+    // Function for storing key-value pair.
+    void put(int key, int value) {
+        if(!head) {
+            head = tail = new Node(key, value);
+            cap--;
+            return;
+        }
+        else if(tail->key == key) {
+            tail->val = value;
+            return;
+        }
+        else if(head->key == key) {
+            tail->next = head;
+            head = head->next;
+            tail = tail->next;
+            tail->next = nullptr;
+            tail->val = value;
+            return;
+        }
+        else {
+            Node *prev = head, *cur = head->next;
+            while(cur) {
+                if(cur->key == key) {
+                    prev->next = cur->next;
+                    tail->next = cur;
+                    tail = tail->next;
+                    tail->next = nullptr;
+                    tail->val = value;
+                    return;
+                }
+                
+                prev = cur;
+                cur = cur->next;
+            }
+        }
+        
+        // if not found
+        tail->next = new Node(key, value);
+        tail = tail->next;
+        cap--;
+        
+        // if there was no space
+        if(cap<0) {
+            Node *temp = head;
+            head = head->next;
+            delete temp;
+            cap++;
         }
     }
 };
 
 //{ Driver Code Starts.
 
-int main()
-{
+int main() {
     int t;
     cin >> t;
-    while (t--)
-    {
+    while (t--) {
 
         int capacity;
         cin >> capacity;
         LRUCache *cache = new LRUCache(capacity);
-        
+
         int queries;
         cin >> queries;
-        while (queries--)
-        {
+        while (queries--) {
             string q;
             cin >> q;
-            if (q == "SET")
-            {
+            if (q == "PUT") {
                 int key;
                 cin >> key;
                 int value;
                 cin >> value;
-                cache->SET(key, value);
-            }
-            else
-            {
+                cache->put(key, value);
+            } else {
                 int key;
                 cin >> key;
-                cout << cache->GET(key) << " ";
+                cout << cache->get(key) << " ";
             }
         }
         cout << endl;
+        cout << "~" << endl;
     }
     return 0;
 }
