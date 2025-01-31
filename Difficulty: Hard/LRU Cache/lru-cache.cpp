@@ -6,107 +6,149 @@ using namespace std;
 // } Driver Code Ends
 // design the class in the most optimal way
 
-struct Node {
-    int key, val;
-    Node *next;
-    Node(int key, int val) {
-        this->key = key;
-        this->val = val;
-        next = nullptr;
-    }
+class Node {
+
+public:
+
+int key;
+
+int value;
+
+Node* prev;
+
+Node* next;
+
+Node(int k, int v) : key(k), value(v), prev(nullptr), next(nullptr) {}
+
 };
+
+//Then the LRUCache class:
 
 class LRUCache {
-  private:
-    int cap;
-    Node *head, *tail;
-  public:
-    // Constructor for initializing the cache capacity with the given value.
-    LRUCache(int cap) {
-        this->cap = cap;
-        head = tail = nullptr;
-    }
 
-    // Function to return value corresponding to the key.
-    int get(int key) {
-        if(!head) return -1;
-        else if(tail->key == key) return tail->val;
-        else if(head->key == key) {
-            tail->next = head;
-            head = head->next;
-            tail = tail->next;
-            tail->next = nullptr;
-            return tail->val;
-        }
-        else {
-            Node *prev = head, *cur = head->next;
-            while(cur) {
-                if(cur->key == key) {
-                    prev->next = cur->next;
-                    tail->next = cur;
-                    tail = tail->next;
-                    tail->next = nullptr;
-                    return tail->val;
-                }
-                
-                prev = cur;
-                cur = cur->next;
-            }
-        }
-        
-        return -1;
-    }
+private:
 
-    // Function for storing key-value pair.
-    void put(int key, int value) {
-        if(!head) {
-            head = tail = new Node(key, value);
-            cap--;
-            return;
-        }
-        else if(tail->key == key) {
-            tail->val = value;
-            return;
-        }
-        else if(head->key == key) {
-            tail->next = head;
-            head = head->next;
-            tail = tail->next;
-            tail->next = nullptr;
-            tail->val = value;
-            return;
-        }
-        else {
-            Node *prev = head, *cur = head->next;
-            while(cur) {
-                if(cur->key == key) {
-                    prev->next = cur->next;
-                    tail->next = cur;
-                    tail = tail->next;
-                    tail->next = nullptr;
-                    tail->val = value;
-                    return;
-                }
-                
-                prev = cur;
-                cur = cur->next;
-            }
-        }
-        
-        // if not found
-        tail->next = new Node(key, value);
-        tail = tail->next;
-        cap--;
-        
-        // if there was no space
-        if(cap<0) {
-            Node *temp = head;
-            head = head->next;
-            delete temp;
-            cap++;
-        }
-    }
+int capacity;
+
+unordered_map<int, Node*> cache;
+
+Node* head;
+
+Node* tail;
+
+void addToFront(Node* node) {
+
+// Add the node right after the head dummy node
+
+node->prev = head;
+
+node->next = head->next;
+
+head->next->prev = node;
+
+head->next = node;
+
+}
+
+void removeNode(Node* node) {
+
+// Remove the node from the list
+
+Node* prevNode = node->prev;
+
+Node* nextNode = node->next;
+
+prevNode->next = nextNode;
+
+nextNode->prev = prevNode;
+
+}
+
+void moveToHead(Node* node) {
+
+removeNode(node);
+
+addToFront(node);
+
+}
+
+Node* popTail() {
+
+Node* node = tail->prev;
+
+removeNode(node);
+
+return node;
+
+}
+
+public:
+
+LRUCache(int cap) {
+
+capacity = cap;
+
+head = new Node(-1, -1);
+
+tail = new Node(-1, -1);
+
+head->next = tail;
+
+tail->prev = head;
+
+}
+
+int get(int key) {
+
+if (cache.find(key) == cache.end()) {
+
+return -1;
+
+}
+
+Node* node = cache[key];
+
+moveToHead(node);
+
+return node->value;
+
+}
+
+void put(int key, int value) {
+
+if (cache.find(key) != cache.end()) {
+
+Node* node = cache[key];
+
+node->value = value;
+
+moveToHead(node);
+
+} else {
+
+Node* newNode = new Node(key, value);
+
+cache[key] = newNode;
+
+addToFront(newNode);
+
+if (cache.size() > capacity) {
+
+Node* lruNode = popTail();
+
+cache.erase(lruNode->key);
+
+delete lruNode;
+
+}
+
+}
+
+}
+
 };
+
+
 
 //{ Driver Code Starts.
 
