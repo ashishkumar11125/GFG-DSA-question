@@ -1,53 +1,50 @@
 //{ Driver Code Starts
 #include <bits/stdc++.h>
-
 using namespace std;
 
 
 // } Driver Code Ends
-//User function template for C++
-class Solution{
-public:	
-	 vector<int> kLargest(int arr[], int n, int k) {
-        // code here
-        vector<int> ans;
-        priority_queue<int,vector<int>,greater<int>> pq;
-        for(int i=0;i<n;i++){
-            pq.push(arr[i]);
-            if(pq.size()>k)
-                pq.pop();
-        }
-        
-        while(!pq.empty()){
-            ans.push_back(pq.top());
-            pq.pop();
-        }
-        reverse(ans.begin(),ans.end());
-        return(ans);
-	}
+class Solution {
+  public:
+     vector<int> kLargest(vector<int>& nums, int k) {
+        // Your code here
+        int n=nums.size();
+        sort(nums.begin(),nums.end());
+        vector<int>ans;
 
+        for(int i=n-1;i>=n-k;i--){
+           ans.push_back(nums[i]);
+        }
+        return ans;
+    }
 };
 
 //{ Driver Code Starts.
-
 int main() {
-    int t;
-    cin >> t;
+    string ts;
+    getline(cin, ts);
+    int t = stoi(ts);
     while (t--) {
-        int n, k;
-        cin >> n >> k;
-        int arr[n];
-        for (int i = 0; i < n; i++) {
-            cin >> arr[i];
+
+        vector<int> arr;
+        string input;
+        getline(cin, input);
+        stringstream ss(input);
+        int number;
+        while (ss >> number) {
+            arr.push_back(number);
         }
+        string ks;
+        getline(cin, ks);
+        int k = stoi(ks);
         Solution ob;
-        auto ans = ob.kLargest(arr, n, k);
-        for (auto x : ans) {
-            cout << x << " ";
+        vector<int> ans = ob.kLargest(arr, k);
+        for (auto it : ans) {
+            cout << it << " ";
         }
-        cout << "\n";
+        cout << endl;
+        cout << "~" << endl;
     }
     return 0;
 }
-
 // } Driver Code Ends
