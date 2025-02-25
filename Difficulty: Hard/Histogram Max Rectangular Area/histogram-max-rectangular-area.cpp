@@ -1,69 +1,65 @@
 //{ Driver Code Starts
+// Initial Template for C++
+
 #include <bits/stdc++.h>
 using namespace std;
 
 
 // } Driver Code Ends
-class Solution
-{
-    public:
-    //Function to find largest rectangular area possible in a given histogram.
-    long long getMaxArea(long long arr[], int n)
-    {
+
+class Solution {
+  public:
+    int getMaxArea(vector<int> &arr) {
         // Your code here
-        long long maxArea = LLONG_MIN;
-        
-        vector<long long>left(n,-1);
-        vector<long long>right(n,n);
-        stack<long long int>st1;
-        for(int i=0;i<n;i++){
-            while(!st1.empty() && arr[st1.top()]>=arr[i]){
-                st1.pop();
+        int n = arr.size();
+        stack<int> st;
+        st.push(0);
+        int ans = 0;
+        for(int i = 1; i < n; i++){
+            while(st.empty() == false && arr[i] < arr[st.top()]){
+                int currElement = arr[st.top()];
+                st.pop();
+                int nextSmaller = i;
+                int prevSmaller = st.empty() == true ? -1 : st.top();
+                ans = max(ans, currElement * (nextSmaller - prevSmaller - 1));
             }
-            if(!st1.empty())
-            left[i]=st1.top();
-            st1.push(i);
+            st.push(i);
         }
-        stack<long long int>st2;
-        
-        for(int i=n-1;i>=0;i--){
-            while(!st2.empty() && arr[st2.top()]>=arr[i]){
-                st2.pop();
-            }
-            if(!st2.empty())
-            right[i]=st2.top();
-            st2.push(i);
+        while(st.empty() == false){
+            int currElement = arr[st.top()];
+            st.pop();
+            int prevSmaller = st.empty() ? -1 : st.top();
+            ans = max(ans, currElement * (n - prevSmaller - 1));
         }
-        
-        for(int i=0;i<n;i++){
-            long long int currArea = (right[i]-left[i]-1)*arr[i];
-            maxArea = max(maxArea,currArea);
-        }
-        return maxArea;
+        return ans;
     }
 };
 
 
+
 //{ Driver Code Starts.
 
-int main()
- {
-    long long t;
-
-    cin>>t;
-    while(t--)
-    {
-        int n;
-        cin>>n;
-        
-        long long arr[n];
-        for(int i=0;i<n;i++)
-            cin>>arr[i];
-        Solution ob;
-        cout<<ob.getMaxArea(arr, n)<<endl;
-    
+int main() {
+    string ts;
+    getline(cin, ts);
+    int t = stoi(ts);
+    while (t--) {
+        vector<int> arr;
+        string input;
+        getline(cin, input);
+        stringstream ss(input);
+        int number;
+        while (ss >> number) {
+            arr.push_back(number);
+        }
+        Solution obj;
+        int res = obj.getMaxArea(arr);
+        cout << res << endl;
+        cout << "~" << endl;
+        // string tl;
+        // getline(cin, tl);
     }
-	return 0;
+    return 0;
 }
 
 // } Driver Code Ends
