@@ -11,24 +11,41 @@ class Solution {
     // Function to compute the edit distance between two strings
     int editDistance(string& s1, string& s2) {
         // code here
-        int n = s1.size(), m = s2.size();
-        vector<vector<int>> dp(n + 1, vector<int>(m + 1, 0));
-
-        for (int i = 0; i <= n; i++) {
-            for (int j = 0; j <= m; j++) {
-                if (i == 0)
-                    dp[i][j] = j; // s1 is empty, insert all characters of s2
-                else if (j == 0)
-                    dp[i][j] = i; // s2 is empty, remove all characters of s1
-                else if (s1[i - 1] == s2[j - 1])
-                    dp[i][j] = dp[i - 1][j - 1]; // Characters match, no operation needed
-                else
-                    dp[i][j] = 1 + min({dp[i - 1][j],     // Remove
-                                        dp[i][j - 1],     // Insert
-                                        dp[i - 1][j - 1]}); // Replace
+        int m = s1.length();
+        int n = s2.length();
+        
+        // Create DP table
+        vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
+        
+        // Initialize first row and column
+        for(int i = 0; i <= m; i++) {
+            dp[i][0] = i;  // Cost of deleting characters from s1
+        }
+        for(int j = 0; j <= n; j++) {
+            dp[0][j] = j;  // Cost of inserting characters from s2
+        }
+        
+        // Fill the DP table
+        for(int i = 1; i <= m; i++) {
+            for(int j = 1; j <= n; j++) {
+                if(s1[i-1] == s2[j-1]) {
+                    // If characters match, no operation needed
+                    dp[i][j] = dp[i-1][j-1];
+                } else {
+                    // Take minimum of three operations:
+                    // 1. Replace: dp[i-1][j-1] + 1
+                    // 2. Delete: dp[i-1][j] + 1
+                    // 3. Insert: dp[i][j-1] + 1
+                    dp[i][j] = 1 + min({
+                        dp[i-1][j-1],  // Replace
+                        dp[i-1][j],    // Delete
+                        dp[i][j-1]     // Insert
+                    });
+                }
             }
         }
-        return dp[n][m];
+        
+        return dp[m][n];
     }
 };
 
