@@ -1,94 +1,79 @@
 //{ Driver Code Starts
-// Program to find the maximum profit job sequence from a given array 
-// of jobs with deadlines and profits 
-#include<bits/stdc++.h>
-using namespace std; 
-
-// A structure to represent a job 
-struct Job 
-{ 
-    int id;	 // Job Id 
-    int dead; // Deadline of job 
-    int profit; // Profit if job is over before or on deadline 
-}; 
+// Driver code
+#include <bits/stdc++.h>
+using namespace std;
 
 
 // } Driver Code Ends
-/*
-struct Job 
-{ 
-    int id;	 // Job Id 
-    int dead; // Deadline of job 
-    int profit; // Profit if job is over before or on deadline 
-};
-*/
 
-class Solution 
-{
-    public:
-    bool static comp(Job a, Job b){
-        return a.profit > b.profit;
-    }
-    //Function to find the maximum profit and the number of jobs done.
-    vector<int> JobScheduling(Job arr[], int n) 
-    { 
-        // your code here
-        int count =0, profit=0;
-        sort(arr, arr+n, comp);
-        int maxi =arr[0].dead;
-        for(int i=0;i<n;i++){
-            maxi=max(maxi,arr[i].dead);
+class Solution {
+  public:
+    vector<int> jobSequencing(vector<int> &deadline, vector<int> &profit) {
+        // code here
+        int n = deadline.size();
+        vector<pair<int, int>> jobs(n);
+
+        int maxDays = 0;
+        for (int i = 0; i < n; i++) {
+            jobs[i] = {profit[i], deadline[i]};
+            maxDays = max(maxDays, deadline[i]);
         }
-        int slot[maxi+1];
-        for(int i=0;i<=maxi;i++) slot[i]=-1;
-        
-        int countJobs=0, jobProfit=0;
-        
-        for(int i=0;i<n;i++){
-            for(int j=arr[i].dead;j>0;j--){
-                if(slot[j]==-1){
-                    slot[j]=i;
-                    countJobs++;
-                    jobProfit += arr[i].profit;
-                    break;
-                }
+
+        sort(jobs.rbegin(), jobs.rend()); // Sort jobs in decreasing order of profit
+
+        vector<int> parent(maxDays + 1);
+        for (int i = 0; i <= maxDays; i++) parent[i] = i; // Initialize disjoint set
+
+        // Disjoint Set Find Function with Path Compression
+        function<int(int)> find = [&](int day) {
+            if (parent[day] == day) return day;
+            return parent[day] = find(parent[day]);
+        };
+
+        int jobCount = 0, maxProfit = 0;
+
+        for (auto& job : jobs) {
+            int p = job.first, d = job.second;
+
+            int availableDay = find(d); // Find closest available day
+            if (availableDay > 0) {
+                parent[availableDay] = find(availableDay - 1); // Update parent (union)
+                jobCount++;
+                maxProfit += p;
             }
         }
-        return {countJobs, jobProfit};
-    } 
+
+        return {jobCount, maxProfit};
+    }
 };
 
+
 //{ Driver Code Starts.
-// Driver program to test methods 
-int main() 
-{ 
+
+int main() {
     int t;
-    //testcases
     cin >> t;
-    
-    while(t--){
-        int n;
-        
-        //size of array
-        cin >> n;
-        Job arr[n];
-        
-        //adding id, deadline, profit
-        for(int i = 0;i<n;i++){
-                int x, y, z;
-                cin >> x >> y >> z;
-                arr[i].id = x;
-                arr[i].dead = y;
-                arr[i].profit = z;
-        }
-        Solution ob;
-        //function call
-        vector<int> ans = ob.JobScheduling(arr, n);
-        cout<<ans[0]<<" "<<ans[1]<<endl;
+    cin.ignore();
+    while (t--) {
+        vector<int> deadlines, profits;
+        string temp;
+        getline(cin, temp);
+        int x;
+        istringstream ss1(temp);
+        while (ss1 >> x)
+            deadlines.push_back(x);
+
+        getline(cin, temp);
+        istringstream ss2(temp);
+        while (ss2 >> x)
+            profits.push_back(x);
+
+        Solution obj;
+        vector<int> ans = obj.jobSequencing(deadlines, profits);
+        cout << ans[0] << " " << ans[1] << endl;
+        cout << "~" << endl;
     }
-	return 0; 
+    return 0;
 }
-
-
 
 // } Driver Code Ends
