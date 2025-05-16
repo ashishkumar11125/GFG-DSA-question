@@ -1,81 +1,88 @@
 //{ Driver Code Starts
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
-#define N 1000
 
 
 // } Driver Code Ends
-// you are required to complete this function 
-// function should print the required range
-class Solution{
-    public:
-    pair<int,int> findSmallestRange(int arr[][N], int n, int k)
-    {
-          //code here
-          vector<pair<int,int>> vp;
-          for (int i=0;i<k;i++){
-              for (int j=0;j<n;j++){
-                vp.push_back({arr[i][j],i});
-              }
-          }
-          sort(vp.begin(),vp.end());
-          map<int,int> mp;
-          int i=0;
-          int j=0;
-          int mini=INT_MAX;
-          pair<int,int> p;
-          while(i<vp.size() && j<vp.size()){
-              mp[vp[j].second]++;
-              if (mp.size()==k){
-                  if (vp[j].first - vp[i].first + 1 < mini){
-                      mini=vp[j].first - vp[i].first + 1;
-                      p={vp[i].first,vp[j].first};
-                  }
-                  while(i<j){
-                      mp[vp[i].second]--;
-                     
-                      if (mp[vp[i].second]==0){
-                          mp.erase(vp[i].second);
-                          i++;
-                          break;
-                      }
-                      i++;
-                      if (vp[j].first - vp[i].first + 1 < mini){
-                          mini=vp[j].first - vp[i].first + 1;
-                          p={vp[i].first,vp[j].first};
-                      }
-                    
-                  }
-                
-              }
-              j++;
-              
-          }
-        
-          return p;
+
+class Solution {
+  public:
+    vector<int> findSmallestRange(vector<vector<int>>& arr) {
+        // code here
+        int n = arr.size();    // number of rows (k lists)
+        int m = arr[0].size(); // number of elements in each row
+
+        // Min-heap to store the current minimum element from each list
+        // Pair structure: {element_value, {row_index, column_index}}
+        priority_queue<pair<int, pair<int, int>>,
+                       vector<pair<int, pair<int, int>>>,
+                       greater<>> minHeap;
+
+        int maxVal   = INT_MIN; // To track the current maximum among heap elements
+        int maxEl    = -1;      // Final max of the smallest range
+        int minEl    = -1;      // Final min of the smallest range
+        int minRange = INT_MAX; // Initialize minRange to maximum possible
+
+        // Initialize heap with first element from each list and update maxVal
+        for (int i = 0; i < n; i++) {
+            minHeap.push({ arr[i][0], { i, 0 } });
+            maxVal = max(maxVal, arr[i][0]); // Update the maximum value so far
+        }
+
+        // Iterate until we reach the end of any list
+        while (true) {
+            auto top = minHeap.top(); // Get the smallest current element
+            minHeap.pop();
+
+            int minVal = top.first;         // Current minimum value
+            int row    = top.second.first;  // Row of the min element
+            int col    = top.second.second; // Column of the min element
+
+            // Update the range if current [minVal, maxVal] is smaller
+            if (maxVal - minVal < minRange) {
+                minRange = maxVal - minVal;
+                minEl    = minVal;
+                maxEl    = maxVal;
+            }
+
+            // If this list is exhausted, we can't find further complete ranges
+            if (col + 1 == m) {
+                break;
+            }
+
+            // Push the next element from the same row into the heap
+            int nextVal = arr[row][col + 1];
+            minHeap.push({ nextVal, { row, col + 1 } });
+
+            // Update maxVal if needed
+            maxVal = max(maxVal, nextVal);
+        }
+
+        return { minEl, maxEl }; // Return the smallest range
+
     }
 };
 
-//{ Driver Code Starts.
-int main()
-{
-    int t;
-    cin>>t;
-    while(t--)
-    {
-        int n, k;
-        cin>>n>>k;
-        int arr[N][N];
-        pair<int,int> rangee;
-        for(int i=0; i<k; i++)
-            for(int j=0; j<n; j++)
-                cin>>arr[i][j];
-        Solution obj;
-	    rangee = obj.findSmallestRange(arr, n, k);
-	    cout<<rangee.first<<" "<<rangee.second<<"\n";
-    }   
-	return 0;
-}
 
+//{ Driver Code Starts.
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        int n, k;
+        cin >> n >> k;
+        vector<vector<int>> arr(k, vector<int>(n));
+
+        for (int i = 0; i < k; i++)
+            for (int j = 0; j < n; j++)
+                cin >> arr[i][j];
+
+        Solution obj;
+        vector<int> range = obj.findSmallestRange(arr);
+        cout << range[0] << " " << range[1] << "\n";
+        cout << "~" << endl;
+    }
+    return 0;
+}
 
 // } Driver Code Ends
