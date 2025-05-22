@@ -1,49 +1,21 @@
-//{ Driver Code Starts
-#include <bits/stdc++.h>
-using namespace std;
-
-string isSubset(int a1[], int a2[], int n, int m) ;
-
-int main() {
-    int t;
-    cin >> t;
-
-    while (t--) {
-        int n, m;
-        cin >> n >> m;
-        int a1[n], a2[m];
-
-        for (int i = 0; i < n; i++) {
-            cin >> a1[i];
+class Solution {
+  public:
+    // Function to check if b is a subset of a
+    bool isSubset(vector<int> &a, vector<int> &b) {
+        // Your code here
+        unordered_map<int, int> freq;
+        int m = a.size();
+        int n = b.size();
+        if (m<n) return false;
+        for(int num : a){
+            freq[num]++;
         }
-        for (int i = 0; i < m; i++) {
-            cin >> a2[i];
+        for (int num : b){
+            if (freq[num]==0){
+                return false;
+            }
+            freq[num]--;
         }
-
-        cout << isSubset(a1, a2, n, m) << endl;
+        return true;
     }
-    return 0;
-}
-
-// } Driver Code Ends
-
-
-string isSubset(int a1[], int a2[], int n, int m) {
-    sort(a1,a1+n);
-    sort(a2,a2+m);
-    
-    int x = 0, y = 0;
-    
-    while (x < n && y < m ){
-        if (a1[x] < a2[y]){
-            ++x;
-        }else if (a1[x] == a2[y]){
-            ++x;
-            ++y;
-        }else{
-            return "No";
-        }
-    }
-    return (y == m) ? "Yes" : "No";
-    
-}
+};
