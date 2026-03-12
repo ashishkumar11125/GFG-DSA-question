@@ -1,25 +1,25 @@
 class Solution {
   public:
-     static int kBitFlips(std::vector<int>& arr, int k) {
-        int n = arr.size();
-        int flips = 0;
-        int flipped = 0;
-        std::queue<int> queue;
+    int kBitFlips(vector<int>& arr, int k) {
+        // code here
+         int n = arr.size();
+        vector<int> flip(n, 0);
+        int currFlip = 0;
+        int ans = 0;
 
-        for (int i = 0; i < n; i++) {
-            if (!queue.empty() && queue.front() == i) {
-                queue.pop();
-                flipped ^= 1;
-            }
+        for(int i = 0; i < n; i++) {
+            if(i >= k)
+                currFlip ^= flip[i-k];
 
-            if ((arr[i] ^ flipped) == 0) {
-                if (i + k > n) return -1;
+            if((arr[i] ^ currFlip) == 0) {
+                if(i + k > n)
+                    return -1;
 
-                flips++;
-                queue.push(i + k);
-                flipped ^= 1;
+                ans++;
+                currFlip ^= 1;
+                flip[i] = 1;
             }
         }
-        return flips;
+        return ans;
     }
 };
